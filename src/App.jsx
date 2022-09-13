@@ -3,26 +3,31 @@ import Form from './components/Form/Form';
 import Contacts from './components/Contacts/Contacts';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { addContacts, removeContacts } from 'redux/items/items-action';
-import { getContacts } from 'redux/items/items-selector';
+import { useEffect } from 'react';
+import {
+  getContacts,
+  addContacts,
+  removeContacts,
+} from 'redux/items/items-operations';
+import { fetchContacts } from 'redux/items/items-selector';
 import { getFilter } from 'redux/filter/filter-selector';
 import { setFilter } from 'redux/filter/filter-action';
 
 const App = () => {
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(fetchContacts);
   const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 
-  const addContact = ({ name, number }) => {
-    const action = addContacts(name, number);
-    const arrayOfName = contacts.map(contact => contact.name);
-    if (arrayOfName.includes(name)) {
-      return alert(`${name} is already in contacts`);
-    }
+  useEffect(() => {
+    dispatch(getContacts());
+  }, [dispatch]);
+
+  const onAddContact = data => {
+    const action = addContacts(data);
     dispatch(action);
   };
 
-  const removeContact = id => {
+  const onRemoveContact = id => {
     dispatch(removeContacts(id));
   };
 
@@ -34,16 +39,14 @@ const App = () => {
     return filterContacts;
   };
 
-  // const filterContacts = getFiltredContacts();
-
   return (
     <div className="phonebook">
       <Section title={'Phonebook'}>
-        <Form onSubmit={addContact} />
+        <Form onSubmit={onAddContact} />
       </Section>
       <Section title={'Contacts'}>
         <Contacts
-          removeContact={removeContact}
+          removeContact={onRemoveContact}
           getFilteredConatcts={getFiltredContacts()}
           handleFilter={event => dispatch(setFilter(event.currentTarget.value))}
         />

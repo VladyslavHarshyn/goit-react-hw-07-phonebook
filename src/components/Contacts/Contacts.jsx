@@ -35,7 +35,7 @@ Contacts.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
+      number: PropTypes.string,
     })
   ),
   handleFilter: PropTypes.func.isRequired,
